@@ -1,0 +1,111 @@
+.home-page {
+  font-family: 'Inter', sans-serif;
+  background-color: #fcfcfc;
+  color: #333;
+}
+
+.home-page h1, .home-page h2, .home-page h3, .home-page h4, .home-page h5, .home-page h6 {
+  font-family: 'Playfair Display', serif;
+  color: #1a1a1a;
+}
+
+.home-page .text-accent {
+  color: #4a5d23;
+}
+
+.home-page .bg-accent {
+  background-color: #4a5d23;
+}
+
+.home-page .btn-accent {
+  background-color: #4a5d23;
+  color: #fff;
+  border-radius: 8px;
+  padding: 12px 28px;
+  font-weight: 500;
+  border: none;
+  transition: background-color 0.3s;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.home-page .btn-accent:hover {
+  background-color: #3a4a1c;
+  color: #fff;
+}
+
+.home-page .btn-outline-accent {
+  background-color: transparent;
+  color: #4a5d23;
+  border: 1.5px solid #4a5d23;
+  border-radius: 8px;
+  padding: 12px 28px;
+  font-weight: 500;
+  transition: all 0.3s;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.home-page .btn-outline-accent:hover {
+  background-color: #4a5d23;
+  color: #fff;
+}
+
+.home-page .section-padding {
+  padding: 100px 0;
+}
+
+.home-page .section-padding-sm {
+  padding: 60px 0;
+}
+
+.home-page .card-premium {
+  background: #ffffff;
+  border-radius: 16px;
+  border: none;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  height: 100%;
+}
+
+.home-page .card-premium:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+}
+
+.home-page .icon-box {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background-color: rgba(74, 93, 35, 0.1);
+  color: #4a5d23;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+/* Dashboard Mockup specific */
+.dashboard-mockup {
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+  border: 1px solid rgba(0,0,0,0.05);
+  background: #fff;
+}
+.dashboard-mockup-header {
+  background: #f8f9fa;
+  padding: 12px 20px;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+  display: flex;
+  align-items: center;
+}
+.mockup-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 6px;
+}
+.dot-red { background: #ff5f56; }
+.dot-yellow { background: #ffbd2e; }
+.dot-green { background: #27c93f; }

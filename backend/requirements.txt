@@ -1,0 +1,33 @@
+# ──────────────────────────────────────────────
+# Mini Leaderboard System — Python Dependencies
+# ──────────────────────────────────────────────
+# Install all with: pip install -r requirements.txt
+# ──────────────────────────────────────────────
+
+# Web Framework
+fastapi==0.141.1
+
+# ASGI Server (runs the app)
+uvicorn==0.52.4
+
+# Database ORM & SQLite Driver
+sqlalchemy==2.0.52
+aiosqlite==0.22.1
+
+# Authentication & Security
+pyjwt==2.13.0
+bcrypt==5.0.0
+python-multipart==0.0.32
+email-validator==2.3.0
+
+
+# Settings management (.env file support)
+pydantic-settings==2.15.0
+
+# HTTP Client for Testing
+httpx==0.28.1
+
+# Extraction
+pandas==2.2.3
+openpyxl==3.1.5
+
