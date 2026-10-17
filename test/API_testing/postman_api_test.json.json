@@ -1,0 +1,1191 @@
+{
+  "info": {
+    "_postman_id": "f34c40bd-4562-4136-a659-e103fe5db459",
+    "name": "Mini Leaderboard System - API Tests",
+    "description": "Generated from the uploaded backend source. Review schemas and expected statuses against the running API. Requests use local variables and a test-created event. Run in order; result upload requires selecting a local file. Delete Event is destructive and should be run last only when cleanup is intended.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "58946861",
+    "_collection_link": "https://go.postman.co/collection/58946861-f34c40bd-4562-4136-a659-e103fe5db459?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "01 - General",
+      "item": [
+        {
+          "name": "Root",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is expected', function () { pm.expect([200]).to.include(pm.response.code); });",
+                  "pm.test('Response time under 5 seconds', function () { pm.expect(pm.response.responseTime).to.be.below(5000); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Health check",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is expected', function () { pm.expect([200]).to.include(pm.response.code); });",
+                  "pm.test('Response time under 5 seconds', function () { pm.expect(pm.response.responseTime).to.be.below(5000); });",
+                  "pm.test('Health is healthy', function () { pm.expect(pm.response.json().status).to.eql('healthy'); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/health",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "health"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "02 - Authentication",
+      "item": [
+        {
+          "name": "Register player",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is expected', function () { pm.expect([201, 400, 409, 422]).to.include(pm.response.code); });\npm.test('Response time under 5 seconds', function () { pm.expect(pm.response.responseTime).to.be.below(5000); });\nif (pm.response.code === 201) { pm.environment.set('player_id', pm.response.json().id); }"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Postman Test Player\",\n  \"email\": \"player1@gmail.com\",\n  \"password\": \"Test@123\",\n  \"role\": \"player\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/register",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "register"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Register creator",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is expected', function () { pm.expect([201, 400, 409, 422]).to.include(pm.response.code); });\npm.test('Response time under 5 seconds', function () { pm.expect(pm.response.responseTime).to.be.below(5000); });\nif (pm.response.code === 201) { pm.environment.set('creator_id', pm.response.json().id); }"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Creator Test 02\",\n  \"email\": \"creator.test04@example.com\",\n  \"password\": \"TestPass123!\",\n  \"role\": \"creator\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/register",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "register"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login creator",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is expected', function () { pm.expect([200, 401, 422]).to.include(pm.response.code); });",
+                  "pm.test('Response time under 5 seconds', function () { pm.expect(pm.response.responseTime).to.be.below(5000); });",
+                  "if (pm.response.code === 200) { pm.environment.set('access_token', pm.response.json().access_token); }"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{creator_email}}\",\n  \"password\": \"{{test_password}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get current user",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is expected', function () { pm.expect([200, 401, 403]).to.include(pm.response.code); });",
+                  "pm.test('Response time under 5 seconds', function () { pm.expect(pm.response.responseTime).to.be.below(5000); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/auth/me",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "me"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "03 - Events",
+      "item": [
+        {
+          "name": "Create event",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is expected', function () { pm.expect([201, 401, 403, 422]).to.include(pm.response.code); });",
+                  "pm.test('Response time under 5 seconds', function () { pm.expect(pm.response.responseTime).to.be.below(5000); });",
+                  "if (pm.response.code === 201) { pm.environment.set('event_id', pm.response.json().id); }"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Postman QA Event\",\n  \"event_type\": \"gaming\",\n  \"description\": \"Disposable event created by Postman API test\",\n  \"participant_limit\": 20,\n  \"status\": \"draft\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/events",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "events"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List events",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is expected', function () { pm.expect([200]).to.include(pm.response.code); });",
+                  "pm.test('Response time under 5 seconds', function () { pm.expect(pm.response.responseTime).to.be.below(5000); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/events",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "events"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List events with filters",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is expected', function () { pm.expect([200]).to.include(pm.response.code); });",
+                  "pm.test('Response time under 5 seconds', function () { pm.expect(pm.response.responseTime).to.be.below(5000); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/events",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "events"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get event by ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is expected', function () { pm.expect([200, 404, 422]).to.include(pm.response.code); });",
+                  "pm.test('Response time under 5 seconds', function () { pm.expect(pm.response.responseTime).to.be.below(5000); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/events/{{event_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "events",
+                "{{event_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update event",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is expected', function () { pm.expect([200, 401, 403, 404, 422]).to.include(pm.response.code); });",
+                  "pm.test('Response time under 5 seconds', function () { pm.expect(pm.response.responseTime).to.be.below(5000); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"Updated by Postman API test\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/events/{{event_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "events",
+                "{{event_id}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "04 - Participants",
+      "item": [
+        {
+          "name": "Join event as current user",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is expected', function () { pm.expect([201, 400, 401, 404, 409, 422]).to.include(pm.response.code); });",
+                  "pm.test('Response time under 5 seconds', function () { pm.expect(pm.response.responseTime).to.be.below(5000); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"external_player_id\": \"postman-player-001\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/events/{{event_id}}/join",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "events",
+                "{{event_id}}",
+                "join"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List my participations",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is expected', function () { pm.expect([200, 401, 403]).to.include(pm.response.code); });",
+                  "pm.test('Response time under 5 seconds', function () { pm.expect(pm.response.responseTime).to.be.below(5000); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/participants/me",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "participants",
+                "me"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List event participants",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is expected', function () { pm.expect([200, 404, 422]).to.include(pm.response.code); });",
+                  "pm.test('Response time under 5 seconds', function () { pm.expect(pm.response.responseTime).to.be.below(5000); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/events/{{event_id}}/participants",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "events",
+                "{{event_id}}",
+                "participants"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "05 - Scoring Rules",
+      "item": [
+        {
+          "name": "Create scoring rule",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is expected', function () { pm.expect([201, 401, 403, 404, 422]).to.include(pm.response.code); });",
+                  "pm.test('Response time under 5 seconds', function () { pm.expect(pm.response.responseTime).to.be.below(5000); });",
+                  "if (pm.response.code === 201) { pm.environment.set('rule_id', pm.response.json().id); }"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"metric\": \"kills\",\n  \"condition\": \"Each kill awards 2 points\",\n  \"operator\": \"each\",\n  \"value\": null,\n  \"points\": 2,\n  \"priority\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/events/{{event_id}}/rules",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "events",
+                "{{event_id}}",
+                "rules"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List scoring rules",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is expected', function () { pm.expect([200, 404, 422]).to.include(pm.response.code); });",
+                  "pm.test('Response time under 5 seconds', function () { pm.expect(pm.response.responseTime).to.be.below(5000); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/events/{{event_id}}/rules",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "events",
+                "{{event_id}}",
+                "rules"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update scoring rule",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is expected', function () { pm.expect([200, 401, 403, 404, 422]).to.include(pm.response.code); });",
+                  "pm.test('Response time under 5 seconds', function () { pm.expect(pm.response.responseTime).to.be.below(5000); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"points\": 3,\n  \"condition\": \"Updated by Postman\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/rules/{{rule_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "rules",
+                "{{rule_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete scoring rule (test data only)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is expected', function () { pm.expect([204, 401, 403, 404, 422]).to.include(pm.response.code); });",
+                  "pm.test('Response time under 5 seconds', function () { pm.expect(pm.response.responseTime).to.be.below(5000); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/rules/{{rule_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "rules",
+                "{{rule_id}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "06 - Result Upload and Validation",
+      "item": [
+        {
+          "name": "Upload results file (select file before running)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is expected', function () { pm.expect([201, 400, 401, 403, 404, 422]).to.include(pm.response.code); });",
+                  "pm.test('Response time under 5 seconds', function () { pm.expect(pm.response.responseTime).to.be.below(5000); });",
+                  "if ([200,201].includes(pm.response.code)) { const j=pm.response.json(); if (j.id) pm.environment.set('upload_id', j.id); else if (j.upload_id) pm.environment.set('upload_id', j.upload_id); }"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "value": ""
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/events/{{event_id}}/results/upload",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "events",
+                "{{event_id}}",
+                "results",
+                "upload"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List event result uploads",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is expected', function () { pm.expect([200, 401, 403, 404, 422]).to.include(pm.response.code); });",
+                  "pm.test('Response time under 5 seconds', function () { pm.expect(pm.response.responseTime).to.be.below(5000); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/events/{{event_id}}/results",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "events",
+                "{{event_id}}",
+                "results"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get upload details",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is expected', function () { pm.expect([200, 401, 403, 404, 422]).to.include(pm.response.code); });",
+                  "pm.test('Response time under 5 seconds', function () { pm.expect(pm.response.responseTime).to.be.below(5000); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/uploads/{{upload_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "uploads",
+                "{{upload_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Validate upload",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is expected', function () { pm.expect([200, 400, 401, 403, 404, 422]).to.include(pm.response.code); });",
+                  "pm.test('Response time under 5 seconds', function () { pm.expect(pm.response.responseTime).to.be.below(5000); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/uploads/{{upload_id}}/validate",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "uploads",
+                "{{upload_id}}",
+                "validate"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get upload validation report",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is expected', function () { pm.expect([200, 400, 401, 403, 404, 422]).to.include(pm.response.code); });",
+                  "pm.test('Response time under 5 seconds', function () { pm.expect(pm.response.responseTime).to.be.below(5000); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/uploads/{{upload_id}}/validation",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "uploads",
+                "{{upload_id}}",
+                "validation"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Process upload and calculate scores",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is expected', function () { pm.expect([200, 400, 401, 403, 404, 422]).to.include(pm.response.code); });",
+                  "pm.test('Response time under 5 seconds', function () { pm.expect(pm.response.responseTime).to.be.below(5000); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/uploads/{{upload_id}}/process",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "uploads",
+                "{{upload_id}}",
+                "process"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "07 - Leaderboard",
+      "item": [
+        {
+          "name": "Get full leaderboard",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is expected', function () { pm.expect([200, 404, 422]).to.include(pm.response.code); });",
+                  "pm.test('Response time under 5 seconds', function () { pm.expect(pm.response.responseTime).to.be.below(5000); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/events/{{event_id}}/leaderboard",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "events",
+                "{{event_id}}",
+                "leaderboard"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get top 10 leaderboard",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is expected', function () { pm.expect([200, 404, 422]).to.include(pm.response.code); });",
+                  "pm.test('Response time under 5 seconds', function () { pm.expect(pm.response.responseTime).to.be.below(5000); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/events/{{event_id}}/leaderboard/top/10",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "events",
+                "{{event_id}}",
+                "leaderboard",
+                "top",
+                "10"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get player rank",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is expected', function () { pm.expect([200, 404, 422]).to.include(pm.response.code); });",
+                  "pm.test('Response time under 5 seconds', function () { pm.expect(pm.response.responseTime).to.be.below(5000); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/events/{{event_id}}/players/{{player_id}}/rank",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "events",
+                "{{event_id}}",
+                "players",
+                "{{player_id}}",
+                "rank"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "08 - Delete Event (destructive; run only when ready)",
+      "item": [
+        {
+          "name": "Delete event created for this test",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is expected', function () { pm.expect([204, 401, 403, 404, 422]).to.include(pm.response.code); });",
+                  "pm.test('Response time under 5 seconds', function () { pm.expect(pm.response.responseTime).to.be.below(5000); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/events/{{event_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "events",
+                "{{event_id}}"
+              ]
+            },
+            "description": "Destructive: deletes the test event and related data. Run this last and only if you want to clean up the event created by this collection."
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://127.0.0.1:8000"
+    }
+  ]
+}

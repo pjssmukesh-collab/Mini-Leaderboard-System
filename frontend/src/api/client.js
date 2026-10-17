@@ -23,9 +23,15 @@ client.interceptors.response.use(
     (response) => response,
     (error) => {
         if (error.response && error.response.status === 401) {
+            // Do not reload page on failed login attempts so error messages can be shown
+            if (error.config && error.config.url && error.config.url.includes('/auth/login')) {
+                return Promise.reject(error);
+            }
             localStorage.removeItem('access_token');
-            // Can trigger a custom event or redirect if needed
-            window.location.href = '/login';
+            // Only redirect if not already on /login
+            if (!window.location.pathname.includes('/login')) {
+                window.location.href = '/login';
+            }
         }
         return Promise.reject(error);
     }

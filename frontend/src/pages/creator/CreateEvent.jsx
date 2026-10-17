@@ -26,7 +26,8 @@ const CreateEvent = () => {
     const navigate = useNavigate();
 
     const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+        const { name, value } = e.target;
+        setFormData(prev => ({ ...prev, [name]: value }));
     };
 
     const handleSelectPreset = (type) => {
@@ -40,8 +41,8 @@ const CreateEvent = () => {
 
         try {
             const payload = { ...formData };
-            if (payload.start_date) payload.start_date = new Date(payload.start_date).toISOString();
-            if (payload.end_date) payload.end_date = new Date(payload.end_date).toISOString();
+            payload.start_date = payload.start_date ? new Date(payload.start_date).toISOString() : null;
+            payload.end_date = payload.end_date ? new Date(payload.end_date).toISOString() : null;
             if (!payload.participant_limit) payload.participant_limit = null;
 
             const newEvent = await api.createEvent(payload);
